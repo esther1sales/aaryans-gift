@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapped Memories</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        .leaflet-tile-pane {
+            filter: grayscale(100%) contrast(1.5);
+        }
+        .map-popup {
+            max-width: 1000px; /* Increased popup width */
+            text-align: center;
+        }
+        .map-popup img {
+            width: 7cm;
+            height: auto;
+            max-height: 1000px; /* Increased image height */
+            object-fit: contain;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        .hover-text {
+            position: absolute;
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="hoverText" class="hover-text"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([43.65107, -79.347015], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        const redIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+            iconSize: [30, 50],
+            iconAnchor: [15, 50],
+            popupAnchor: [0, -45],
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-shadow.png',
+            shadowSize: [50, 50]
+        });
+
+        const hoverText = document.getElementById('hoverText');
+
+        const locations = [
+            { lat: 43.6558, lng: -79.3919, text: 'Sanchari and Amir', img: 'aaryanphotos/aaryan222.jpg' },
+            { lat: 43.6587, lng: -79.3846, text: 'Anisha', img: 'aaryanphotos/anishasaaryan.jpg' },
+            { lat: 43.6214, lng: -79.3788, text: 'Toronto Island', img: 'aaryanphotos/torontoislandaaryan.jpg' },
+            { lat: 43.6420, lng: -79.4569, text: 'High Park', img: 'aaryanphotos/highparkaaryanomama.jpg' },
+            { lat: 43.7104, lng: -79.3935, text: 'Adarsh', img: 'aaryanphotos/adarshaaryan.jpg' },
+            { lat: 43.6703, lng: -79.3928, text: 'Esther', img: 'aaryanphotos/aaryanatmine.jpg' },
+            { lat: 43.6749, lng: -79.4571, text: 'Brazilian Snacks', img: 'aaryanphotos/aaryanbrazil.jpg' },
+            { lat: 43.6532, lng: -79.3915, text: 'OCAD', img: 'aaryanphotos/OCADaaryan2.jpg' },
+            { lat: 45.2940, lng: -73.3455, text: 'Montreal', img: 'aaryanphotos/aaryanme.jpg' },
+            { lat: 43.6488, lng: -79.3912, text: 'Movies', img: 'aaryanphotos/moviesaaryan.jpg' },
+            { lat: 43.6599, lng: -79.3792, text: 'Home pt.1', img: 'aaryanphotos/avantaaryan.jpg' },
+            { lat: 43.6644, lng: -79.3864, text: 'Home pt.2', img: 'aaryanphotos/aaryanomama2.jpg' },
+        ];
+
+        locations.forEach(location => {
+            const marker = L.marker([location.lat, location.lng], { icon: redIcon }).addTo(map);
+            marker.bindPopup(`
+                <div class='map-popup'>
+                    <p><strong>${location.text}</strong></p>
+                    <img src='${location.img}' alt='Location Image'>
+                </div>
+            `);
+            
+            marker.on('mouseover', (e) => {
+                hoverText.textContent = location.text;
+                hoverText.style.display = 'block';
+            });
+
+            marker.on('mousemove', (e) => {
+                hoverText.style.left = e.originalEvent.pageX + 15 + 'px';
+                hoverText.style.top = e.originalEvent.pageY + 15 + 'px';
+            });
+
+            marker.on('mouseout', () => {
+                hoverText.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
